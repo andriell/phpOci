@@ -23,11 +23,20 @@ class Orm {
         return self::$instance;
     }
     //</editor-fold>
-
+    private $nl = "\n";
+    // Массив схем для которых будут производиться переименования
     private $schema = array();
 
     private $data = array();
 
+    /**
+     * @param string $nl
+     * @return $this
+     */
+    public function setNl($nl) {
+        $this->nl = $nl;
+        return $this;
+    }
 
     /**
      * @param array $schema

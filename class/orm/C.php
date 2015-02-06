@@ -21,4 +21,12 @@ class C {
     const objectType = 'OBJECT_TYPE';
     const columnName = 'COLUMN_NAME';
     const dataType = 'DATA_TYPE';
+
+    // Констатны класса таблицы
+    const prefColumnAs = 'c';
+    const prefColumnName = 'cn';
+
+    const constName = 'name';
+    const constFullName = 'fullName';
+    const constSchema = 'schema';
 }
