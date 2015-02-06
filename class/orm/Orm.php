@@ -78,5 +78,6 @@ FROM SYS.ALL_OBJECTS ao
             );
         }
         print_r($this->data);
+        echo Helper::printR($this->data);
     }
 }
