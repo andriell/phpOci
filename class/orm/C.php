@@ -6,6 +6,12 @@
  */
 
 class C {
+    const t1 = '    ';
+    const t2 = '        ';
+    const t3 = '            ';
+    const t4 = '                ';
+    const t5 = '                    ';
+
     const type = 'type';
     const name = 'name';
     const param = 'param';
