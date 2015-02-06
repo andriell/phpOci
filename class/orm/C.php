@@ -6,5 +6,13 @@
  */
 
 class C {
-
-} 
+    const type = 'type';
+    const name = 'name';
+    const param = 'param';
+    const data = 'data';
+    const owner = 'OWNER';
+    const tableName = 'TABLE_NAME';
+    const objectType = 'OBJECT_TYPE';
+    const columnName = 'COLUMN_NAME';
+    const dataType = 'DATA_TYPE';
+}
