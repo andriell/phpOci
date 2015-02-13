@@ -12,23 +12,31 @@ class Helper {
             return $array . self::nl;
         }
         if (empty($array)) {
-            return 'Array()';
+            return 'Array(),';
         }
-        $r = '';
+        $r = 'Array(' . self::nl;
         foreach ($array as $key => &$value) {
             if (is_array($array[$key])) {
-                if ($isFirst) {
-                    $r .= 'Array(' . self::nl;
-                } else {
-                    $r .= $tab . 'Array(' . self::nl;
-                }
-                $r .= $tab . "    [" . $key . "] => " . self::printR($array[$key], $tab . '    ', true) . self::nl;
-                $r .= $tab . '),' . self::nl;
+                $r .= $tab . '    ' . self::exportToArray($key) . ' => ' . self::printR($array[$key], $tab . '    ', true) . self::nl;
             } else {
-                $r .= $tab . "    [" . $key . "] => " . $value . ',' . self::nl;
+                $r .= $tab . '    ' . self::exportToArray($key) . ' => ' . self::exportToArray($value) . ',' . self::nl;
             }
-            $isFirst = false;
         }
-        return $r;
+        return $r . $tab . '),';
+    }
+
+    protected  static function exportToArray($data) {
+        if (is_int($data)) {
+            return $data;
+        } elseif (is_string($data)) {
+            return '\'' . addslashes($data) . '\'';
+        } elseif (is_bool($data)) {
+            return $data ? 'true' : 'false';
+        } elseif ($data === null) {
+            return 'null';
+        } elseif (is_object($data)) {
+            return get_class($data);
+        }
+        return $data;
     }
 } 
