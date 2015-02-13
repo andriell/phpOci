@@ -9,4 +9,6 @@ use \orm\Orm;
 
 Orm::getInstance()
     ->setSchema(Config::schemaList())
+    ->setNamespace('M')
+    ->setOutputDir(ROOT_DIR . DIRECTORY_SEPARATOR . 'model')
     ->run();

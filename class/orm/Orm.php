@@ -26,8 +26,27 @@ class Orm {
     private $nl = "\n";
     // Массив схем для которых будут производиться переименования
     private $schema = array();
-
     private $data = array();
+    private $outputDir;
+    private $namespace;
+
+    /**
+     * @param mixed $namespace
+     * @return $this
+     */
+    public function setNamespace($namespace) {
+        $this->namespace = $namespace;
+        return $this;
+    }
+
+    /**
+     * @param mixed $outputDir
+     * @return $this
+     */
+    public function setOutputDir($outputDir) {
+        $this->outputDir = $outputDir;
+        return $this;
+    }
 
     /**
      * @param string $nl
@@ -48,6 +67,7 @@ class Orm {
     }
 
     public function run() {
+        File::getInstance()->clearDir($this->outputDir);
         $bind = array();
         $sql = "
 SELECT atc.OWNER, atc.TABLE_NAME, ao.OBJECT_TYPE, atc.COLUMN_NAME, atc.DATA_TYPE
@@ -76,7 +96,6 @@ FROM SYS.ALL_OBJECTS ao
                 C::asName => 'C' . ++$columnCount,
             );
         }
-
         foreach ($this->data as $schema => &$rowSchema) {
             foreach ($rowSchema[C::data] as $table => &$rowTable) {
                 $this->genTableClass($schema, $table, $rowTable[C::data]);
@@ -87,10 +106,17 @@ FROM SYS.ALL_OBJECTS ao
     }
 
     public function genTableClass($schema, $tableName, array &$cols) {
+        $namespace = CC::uCC($schema);
+        if ($this->namespace) {
+            $namespace = $this->namespace . '\\' . $namespace;
+        }
+
+        $class = C::prefTb . CC::uCC($tableName);
+
         $str = '';
-        $str .= '<?php namespace ' . CC::uCC($schema) . '/' . CC::uCC($tableName) . ';' . $this->nl;
+        $str .= '<?php namespace ' . $namespace . ';' . $this->nl;
         $str .= $this->nl;
-        $str .= 'class ' . CC::uCC($tableName) . ' {' . $this->nl;
+        $str .= 'class ' . $class . ' {' . $this->nl;
         $str .= C::t1 . '// Column name' . $this->nl;
         foreach ($cols as $col => &$rowCol) {
             $str .= C::t1 . 'const ' . C::prefCN . CC::uCC($col) . ' = \'' . $col . '\';' . $this->nl;
@@ -103,5 +129,7 @@ FROM SYS.ALL_OBJECTS ao
 
         $str .= '}' . $this->nl;
         echo $str;
+
+        File::getInstance()->saveClass($namespace, $class, $str);
     }
 }
