@@ -55,7 +55,7 @@ FROM SYS.ALL_OBJECTS ao
   JOIN SYS.ALL_TAB_COLUMNS atc ON ao.OWNER = atc.OWNER AND ao.OBJECT_NAME = atc.TABLE_NAME AND ao.OBJECT_TYPE IN ('TABLE', 'VIEW')
   WHERE ao.OWNER " . SQLHelper::makeIn($this->schema, $bind);
         $rTmp = CM::con()->execute($sql, $bind);
-
+        $columnCount = 0;
         foreach ($rTmp as $row) {
             if (!isset($this->data[$row['OWNER']])) {
                 $this->data[$row['OWNER']] = array(
@@ -63,7 +63,6 @@ FROM SYS.ALL_OBJECTS ao
                     C::data => array(),
                 );
             }
-
             if (!isset($this->data[$row['OWNER']][C::data][$row['TABLE_NAME']])) {
                 $this->data[$row['OWNER']][C::data][$row['TABLE_NAME']] = array(
                     C::param => array(
@@ -72,11 +71,37 @@ FROM SYS.ALL_OBJECTS ao
                     C::data => array(),
                 );
             }
-
             $this->data[$row['OWNER']][C::data][$row['TABLE_NAME']][C::data][$row['COLUMN_NAME']] = array(
                 C::type => $row['DATA_TYPE'],
+                C::asName => 'C' . ++$columnCount,
             );
         }
+
+        foreach ($this->data as $schema => &$rowSchema) {
+            foreach ($rowSchema[C::data] as $table => &$rowTable) {
+                $this->genTableClass($schema, $table, $rowTable[C::data]);
+            }
+        }
+
         echo Helper::printR($this->data);
+    }
+
+    public function genTableClass($schema, $tableName, array &$cols) {
+        $str = '';
+        $str .= '<?php namespace ' . CC::uCC($schema) . '/' . CC::uCC($tableName) . ';' . $this->nl;
+        $str .= $this->nl;
+        $str .= 'class ' . CC::uCC($tableName) . ' {' . $this->nl;
+        $str .= C::t1 . '// Column name' . $this->nl;
+        foreach ($cols as $col => &$rowCol) {
+            $str .= C::t1 . 'const ' . C::prefCN . CC::uCC($col) . ' = \'' . $col . '\';' . $this->nl;
+        }
+        $str .= $this->nl;
+        $str .= C::t1 . '// Column as' . $this->nl;
+        foreach ($cols as $col => &$rowCol) {
+            $str .= C::t1 . 'const ' . C::prefColumnAs . CC::uCC($col) . ' = \'' . $rowCol[C::asName] . '\';' . $this->nl;
+        }
+
+        $str .= '}' . $this->nl;
+        echo $str;
     }
 }

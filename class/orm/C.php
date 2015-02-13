@@ -12,6 +12,7 @@ class C {
     const t4 = '                ';
     const t5 = '                    ';
 
+    const asName = 'as';
     const type = 'type';
     const name = 'name';
     const param = 'param';
@@ -22,9 +23,14 @@ class C {
     const columnName = 'COLUMN_NAME';
     const dataType = 'DATA_TYPE';
 
-    // Констатны класса таблицы
+    // Колонка
     const prefColumnAs = 'c';
-    const prefColumnName = 'cn';
+    // Название колонки
+    const prefCN = 'cn';
+    // Базовая таблица
+    const prefTb = 'Tb';
+    // Таблица пользователя
+    const prefT = 'T';
 
     const constName = 'name';
     const constFullName = 'fullName';

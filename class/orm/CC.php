@@ -5,7 +5,7 @@
  * Time: 17:56
  */
 
-class CamelCase {
+class CC {
     private static $lCC = array();
     private static $uCC = array();
     private static $lUS = array();
