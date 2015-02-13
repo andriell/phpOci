@@ -77,7 +77,6 @@ FROM SYS.ALL_OBJECTS ao
                 C::type => $row['DATA_TYPE'],
             );
         }
-        print_r($this->data);
         echo Helper::printR($this->data);
     }
 }
